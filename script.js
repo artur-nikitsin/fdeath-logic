@@ -4,15 +4,20 @@ window.onload = function () {
     /*app theme*/
 
 
-    let currentTheme = JSON.parse(localStorage.getItem('theme'));
+    let installTheme=()=>{
+        let currentTheme = JSON.parse(localStorage.getItem('theme'));
 
-    if (currentTheme === "appThemeBlack") {
-        document.getElementById("appBody").setAttribute("class", "darkBody")
-    }
+        if (currentTheme === "appThemeBlack") {
+            document.getElementById("appBody").setAttribute("class", "darkBody")
+        }
 
-    if (currentTheme === "appThemeWhite") {
-        document.getElementById("appBody").setAttribute("class", "whiteBody")
-    }
+        if (currentTheme === "appThemeWhite") {
+            document.getElementById("appBody").setAttribute("class", "whiteBody")
+        }
+
+    };
+
+    installTheme();
 
 
     document.getElementById("appThemeWhite").addEventListener("click", setAppTheme, true);
