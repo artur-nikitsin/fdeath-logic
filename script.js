@@ -1,6 +1,43 @@
 window.onload = function () {
 
 
+    /*app theme*/
+
+
+    let currentTheme = JSON.parse(localStorage.getItem('theme'));
+
+    if (currentTheme === "appThemeBlack") {
+        document.getElementById("appBody").setAttribute("class", "darkBody")
+    }
+
+    if (currentTheme === "appThemeWhite") {
+        document.getElementById("appBody").setAttribute("class", "whiteBody")
+    }
+
+
+    document.getElementById("appThemeWhite").addEventListener("click", setAppTheme, true);
+    document.getElementById("appThemeBlack").addEventListener("click", setAppTheme, true);
+
+
+    function setAppTheme(e) {
+
+        let checkedTheme = e.target.getAttribute("id");
+
+        if (checkedTheme === "appThemeWhite") {
+            document.getElementById("appThemeWhite").checked = true;
+            document.getElementById("appBody").setAttribute("class", "whiteBody")
+            localStorage.setItem('theme', JSON.stringify(checkedTheme));
+        }
+        ;
+        if (checkedTheme === "appThemeBlack") {
+            document.getElementById("appThemeBlack").checked = true;
+            document.getElementById("appBody").setAttribute("class", "darkBody")
+            localStorage.setItem('theme', JSON.stringify(checkedTheme));
+        }
+
+    };
+
+
     /*check localStorage and rendering tasks*/
 
     let tasks = [];
@@ -17,11 +54,14 @@ window.onload = function () {
         tasksIdCounter = 0;
     }
 
+
+    console.log(tasks);
+
     renderTasks(tasks);
     taskCounter(tasks);
 
-    /*add task*/
 
+    /*add task*/
 
     document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
@@ -43,7 +83,9 @@ window.onload = function () {
 
         task.timeOfCreate = +new Date();
 
-        task.timeOfCreateString = currentDate.getHours() + ":" + currentDate.getMinutes() + " " + "0" +
+        let minutes = currentDate.getMinutes() <= 9 ? ("0" + currentDate.getMinutes()) : currentDate.getMinutes();
+
+        task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
             currentDate.getDay() + "." + "0" + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
 
         task.completed = false;
@@ -58,6 +100,7 @@ window.onload = function () {
         document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
     }
 
+
     /*   delete all tasks*/
 
     document.getElementById("deleteAllTasksButton").addEventListener("click", deleteAllTasks, true);
@@ -70,8 +113,7 @@ window.onload = function () {
     };
 
 
-    /*change task*/
-
+    /*add edit buttons listeners*/
 
     let addEditButtons = () => {
         let editButtons = document.querySelectorAll(".editTaskButton");
@@ -83,6 +125,9 @@ window.onload = function () {
     };
 
     addEditButtons();
+
+
+    /*change task*/
 
     function changeTask(e) {
 
@@ -156,6 +201,7 @@ window.onload = function () {
 
     }
 
+
     /*sort tasks*/
 
     document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
@@ -187,7 +233,11 @@ window.onload = function () {
 
 
 }
+
+
 ;
+
+/*tasks Counter*/
 
 function taskCounter(tasks) {
 
@@ -205,7 +255,7 @@ function taskCounter(tasks) {
     document.getElementById("toDoHeader").innerText = "ToDo (" + tasksCount + ")";
     document.getElementById("completedHeader").innerText = "Comleted (" + completedTasksCount + ")";
 
-}
+};
 
 
 let renderTasks = (tasks) => {
@@ -272,6 +322,6 @@ let renderTasks = (tasks) => {
     document.getElementById("currentTasks").innerHTML = tasksInProgress.join("");
     document.getElementById("completedTasks").innerHTML = tasksCompleted.join("");
 
-     taskCounter(tasks);
+    taskCounter(tasks);
 
 }

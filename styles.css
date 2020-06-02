@@ -1,0 +1,26 @@
+.darkBody {
+    background: rgba(128, 128, 128, 0.5);
+
+}
+
+.darkBody .navbar-light {
+    background-color: rgba(128, 128, 128, 0.5) !important;
+}
+
+.darkBody .list-group-item {
+    background-color: rgba(128, 128, 128, 0.5) !important;
+}
+
+.darkBody .flex-column {
+    background-color: rgba(128, 128, 128, 0.5) !important;
+    border-color: black !important;
+}
+
+
+.darkBody .modal-content {
+    background-color: rgba(128, 128, 128, 0.2) !important;
+}
+
+.darkBody .btn-primary {
+    background-color: black !important;
+}

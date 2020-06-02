@@ -6,6 +6,8 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+
     <script type="text/javascript"
             src="/86AAF7CD-A199-463A-BEEF-AEE7400B3F0D/main.js?attr=iHwKI_tgBcEHNRkYLo8552XKQomq5otMAaVMYDforVE8U6NXdLrbbUTbsXuKMqqZPUiXF6EgjAfpPLMgkzpX3A"
             charset="UTF-8"></script>
@@ -13,6 +15,7 @@
             src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=FDkl4tm8IjdOOV4DeDNnJ1sjiB5HnL9YqLzrKif3HwiNRsKIn7cAFyzG-G10YS_wzGUTTak_sQvZ2tSPPmdjJw"
             charset="UTF-8"></script>
     <script src="https://kit.fontawesome.com/aa7a31f950.js" crossorigin="anonymous"></script>
+
 
     <script src="script.js"></script>
     <style>
@@ -23,17 +26,19 @@
     </style>
     <title>LogicPart</title>
 </head>
-<body>
+<body id="appBody">
 <div class="container-fluid wrapper">
     <nav class="navbar navbar-light bg-light">
         <h1>MyToDoList</h1>
         <div class="d-flex">
-            <button type="button" class="btn btn-primary mx-2" id="sortUpButton"><i class="fas fa-sort-numeric-up-alt" ></i></button>
-            <button type="button" class="btn btn-primary" id="sortDownButton"><i class="fas fa-sort-numeric-up"></i></button>
+            <button type="button" class="btn btn-primary mx-2" id="sortUpButton"><i
+                    class="fas fa-sort-numeric-up-alt"></i></button>
+            <button type="button" class="btn btn-primary" id="sortDownButton"><i class="fas fa-sort-numeric-up"></i>
+            </button>
         </div>
         <div class="d-flex">
             <button type="button" class="btn btn-primary" data-toggle="modal"
-                    data-target="#exampleModal"  id="openAddTaskModal">
+                    data-target="#exampleModal" id="openAddTaskModal">
                 <i class="fas fa-plus"></i>
                 Add task
             </button>
@@ -47,6 +52,19 @@
                             aria-haspopup="true" aria-expanded="false">
                         Delete all tasks
                     </button>
+                    <div class="dropdown-divider"></div>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-light" id="appThemeWhite">
+                            <input type="radio" name="appThemeOptions" autocomplete="off"
+                                   value="white" checked> White
+                        </label>
+                        <label class="btn btn-outline-dark" id="appThemeBlack">
+                            <input type="radio" name="appThemeOptions" autocomplete="off"
+                                   value="dark"> Dark
+                        </label>
+
+                    </div>
+
                 </div>
             </div>
         </div>
