@@ -6,6 +6,7 @@ window.onload = function () {
     let tasks = [];
     let tasksIdCounter = 0;
 
+
     if (localStorage.getItem('tasks')) {
         tasks = JSON.parse(localStorage.getItem('tasks'));
         tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
@@ -17,7 +18,7 @@ window.onload = function () {
     }
 
     renderTasks(tasks);
-
+    taskCounter(tasks);
 
     /*add task*/
 
@@ -152,6 +153,7 @@ window.onload = function () {
         }
 
         addEditButtons();
+
     }
 
     /*sort tasks*/
@@ -183,8 +185,27 @@ window.onload = function () {
         addEditButtons();
     }
 
+
 }
 ;
+
+function taskCounter(tasks) {
+
+    let tasksCount = 0;
+    let completedTasksCount = 0;
+
+    tasks.forEach(function (item, i) {
+
+        if (item.completed) {
+            completedTasksCount++
+        }
+    })
+    tasksCount = (tasks.length - completedTasksCount) > 0 ? tasks.length - completedTasksCount : 0;
+
+    document.getElementById("toDoHeader").innerText = "ToDo (" + tasksCount + ")";
+    document.getElementById("completedHeader").innerText = "Comleted (" + completedTasksCount + ")";
+
+}
 
 
 let renderTasks = (tasks) => {
@@ -250,4 +271,7 @@ let renderTasks = (tasks) => {
 
     document.getElementById("currentTasks").innerHTML = tasksInProgress.join("");
     document.getElementById("completedTasks").innerHTML = tasksCompleted.join("");
+
+     taskCounter(tasks);
+
 }
