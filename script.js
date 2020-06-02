@@ -10,13 +10,10 @@ window.onload = function () {
         tasks = JSON.parse(localStorage.getItem('tasks'));
         tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
 
-        console.log(tasks);
-
     } else {
 
         tasks = [];
         tasksIdCounter = 0;
-        console.log("а там нет ниче");
     }
 
     renderTasks(tasks);
@@ -24,13 +21,16 @@ window.onload = function () {
 
     /*add task*/
 
-    document.getElementById("addTaskButton").addEventListener("click", pullData, true);
+
+    document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
+
+    function putListener() {
+        document.getElementById("addTaskButton").addEventListener("click", pullData, true);
+    };
 
 
     function pullData(e) {
 
-        /* e.preventDefault();*/
-        console.log("clear");
         let task = {};
 
         task.title = document.getElementById("inputTitle").value;
@@ -39,8 +39,8 @@ window.onload = function () {
 
         let currentDate = new Date();
 
-        task.timeOfCreate = [currentDate.getHours(), currentDate.getMinutes(), currentDate.getDay(),
-            currentDate.getMonth() + 1, currentDate.getFullYear()];
+
+        task.timeOfCreate = +new Date();
 
         task.timeOfCreateString = currentDate.getHours() + ":" + currentDate.getMinutes() + " " + "0" +
             currentDate.getDay() + "." + "0" + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
@@ -62,7 +62,7 @@ window.onload = function () {
     document.getElementById("deleteAllTasksButton").addEventListener("click", deleteAllTasks, true);
 
     function deleteAllTasks() {
-        console.log("clear");
+
         localStorage.clear();
         document.location.reload(true);
 
@@ -72,22 +72,26 @@ window.onload = function () {
     /*change task*/
 
 
-    let editButtons = document.getElementsByClassName("editTaskButton");
+    let addEditButtons = () => {
+        let editButtons = document.querySelectorAll(".editTaskButton");
 
-    for (let i = 0; i <= editButtons.length; i++) {
-        editButtons[i].addEventListener("click", changeTask, true)
+        for (let i = 0; i < editButtons.length; i++) {
+            editButtons[i].addEventListener("click", changeTask, true)
+        }
 
-    }
+    };
 
+    addEditButtons();
 
     function changeTask(e) {
 
         let currentId = e.target.getAttribute("id");
         let buttonType = e.target.getAttribute("value");
 
+
         /*    complete Task*/
         if (buttonType === "complete") {
-            console.log(buttonType);
+
 
             tasks.forEach(function (item, i, arr) {
                 if (item.id + "-complete" === currentId) {
@@ -96,7 +100,6 @@ window.onload = function () {
                 }
             })
 
-            console.log(tasks);
             localStorage.setItem('tasks', JSON.stringify(tasks));
             renderTasks(tasks);
 
@@ -105,7 +108,6 @@ window.onload = function () {
 
         /*    delete Task*/
         if (buttonType === "delete") {
-            console.log(buttonType);
 
             tasks.forEach(function (item, i, arr) {
                 if (item.id + "-delete" === currentId) {
@@ -114,42 +116,75 @@ window.onload = function () {
                 }
             })
 
-            console.log(tasks);
             localStorage.setItem('tasks', JSON.stringify(tasks));
             renderTasks(tasks);
         }
 
         /*    edit Task*/
         if (buttonType === "edit") {
-            console.log(buttonType);
+
+            document.getElementById("addTaskButton").addEventListener("click", changeData, true);
+
+
+            let currentEditTask = null;
 
             tasks.forEach(function (item, i, arr) {
                 if (item.id + "-edit" === currentId) {
-
-                    tasks.splice(i, 1);
                     document.getElementById("inputTitle").value = item.title;
                     document.getElementById("inputText").value = item.text;
                     document.getElementById(item.priority).checked = true;
-
+                    currentEditTask = i;
                 }
-            })
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-            renderTasks(tasks);
+            });
+
+            function changeData() {
+
+
+                tasks[currentEditTask].title = document.getElementById("inputTitle").value;
+                tasks[currentEditTask].text = document.getElementById("inputText").value;
+                tasks[currentEditTask].priority = document.querySelector("input[name=gridRadios]:checked").value;
+
+
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks(tasks);
+            };
+
         }
 
+        addEditButtons();
     }
 
     /*sort tasks*/
 
+    document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
 
 
+    function sortUp() {
+
+        let sorted = tasks.sort(function (a, b) {
+            return a.timeOfCreate - b.timeOfCreate
+        })
+        localStorage.setItem('tasks', JSON.stringify(sorted));
+        renderTasks(tasks);
+        addEditButtons();
+    }
 
 
+    document.getElementById("sortDownButton").addEventListener("click", sortDown, true);
 
 
+    function sortDown() {
 
+        let sorted = tasks.sort(function (a, b) {
+            return b.timeOfCreate - a.timeOfCreate
+        })
+        localStorage.setItem('tasks', JSON.stringify(sorted));
+        renderTasks(tasks);
+        addEditButtons();
+    }
 
-};
+}
+;
 
 
 let renderTasks = (tasks) => {
@@ -160,7 +195,22 @@ let renderTasks = (tasks) => {
     tasks.forEach(function (item, i, arr) {
 
 
-        let editMenu = item.completed ? "" : "<div class=\"dropdown m-2 dropleft\">" +
+        let editMenu = item.completed ?
+
+            "<div class=\"dropdown m-2 dropleft\">" +
+            "<button class=\"btn btn-secondary h-100\" type=\"button\" id=\"dropdownMenuItem1\" " +
+            "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
+            "<i class=\"fas fa-ellipsis-v\" aria-hidden=\"true\"></i>" +
+            "</button>" +
+            "<div class=\"dropdown-menu p-2 flex-column\" aria-labelledby=\"dropdownMenuItem1\">" +
+            "<button value=\"delete\" type=\"button\" class=\"btn btn-danger w-100  editTaskButton\" " +
+            "id=" + item.id + "-delete" + ">Delete</button>" +
+            "</div>" +
+            "</div>"
+
+            :
+
+            "<div class=\"dropdown m-2 dropleft\">" +
             "<button class=\"btn btn-secondary h-100\" type=\"button\" id=\"dropdownMenuItem1\" " +
             "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
             "<i class=\"fas fa-ellipsis-v\" aria-hidden=\"true\"></i>" +
@@ -192,7 +242,6 @@ let renderTasks = (tasks) => {
             editMenu +
             "</li>";
 
-
         if (item.completed === true) {
             tasksCompleted.push(currentTask);
         } else
@@ -202,9 +251,3 @@ let renderTasks = (tasks) => {
     document.getElementById("currentTasks").innerHTML = tasksInProgress.join("");
     document.getElementById("completedTasks").innerHTML = tasksCompleted.join("");
 }
-
-
-
-
-
-
