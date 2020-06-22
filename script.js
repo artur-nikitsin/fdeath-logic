@@ -69,6 +69,9 @@ window.onload = function () {
 
     function putListener() {
 
+        document.getElementById("inputTitle").value = "";
+        document.getElementById("inputText").value = "";
+        document.querySelector("input[name=gridRadios]:checked").checked = false;
         document.getElementById("addTaskButton").innerText = "Add task";
         document.getElementById("exampleModalLabel").innerText = "Add task";
         document.getElementById("addTaskButton").addEventListener("click", pullData, true);
@@ -202,7 +205,6 @@ window.onload = function () {
         addEditButtons();
 
     }
-
 
     /*sort tasks*/
 
