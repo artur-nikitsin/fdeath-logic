@@ -23,3 +23,15 @@
 .darkBody .btn-primary {
     background-color: black !important;
 }
+
+.red-task {
+    background-color: rgba(239, 14, 14, 0.5) !important;
+}
+
+.green-task {
+    background-color: rgba(58, 155, 26, 0.5) !important;
+}
+
+.yellow-task {
+    background-color: rgba(235, 239, 14, 0.5) !important;
+}
