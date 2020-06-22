@@ -6,22 +6,18 @@
     background-color: rgba(128, 128, 128, 0.5) !important;
 }
 
-.darkBody .list-group-item {
-    background-color: rgba(128, 128, 128, 0.5) !important;
-}
-
 .darkBody .flex-column {
     background-color: rgba(128, 128, 128, 0.5) !important;
-    border-color: black !important;
+    border-color: #000000 !important;
 }
 
-
 .darkBody .modal-content {
-    background-color: rgba(128, 128, 128, 0.2) !important;
+    background-color: rgb(168, 168, 168); !important;
 }
 
 .darkBody .btn-primary {
-    background-color: black !important;
+    background-color: #000000 !important;
+    border-color: #000000 !important;
 }
 
 .red-task {

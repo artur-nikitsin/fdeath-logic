@@ -3,7 +3,6 @@ window.onload = function () {
 
     /*app theme*/
 
-
     let installTheme = () => {
 
         let currentTheme = JSON.parse(localStorage.getItem('theme'));
@@ -49,12 +48,9 @@ window.onload = function () {
 
 
     if (localStorage.getItem('tasks')) {
-
         tasks = JSON.parse(localStorage.getItem('tasks'));
         tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
-
     } else {
-
         tasks = [];
         tasksIdCounter = 0;
     }
@@ -62,16 +58,20 @@ window.onload = function () {
     renderTasks(tasks);
     taskCounter(tasks);
 
-
     /*add task*/
 
     document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
     function putListener() {
 
-        let checkedRadio = document.querySelector("input[name=gridRadios]:checked");
-        if (checkedRadio) {
-            checkedRadio.checked = false
+        let checkedPriorityRadio = document.querySelector("input[name=gridRadios]:checked");
+        if (checkedPriorityRadio) {
+            checkedPriorityRadio.checked = false
+        }
+
+        let checkedColorRadio = document.querySelector("input[name=gridRadiosColor]:checked");
+        if (checkedColorRadio) {
+            checkedColorRadio.checked = false
         }
 
         document.getElementById("inputTitle").value = "";
@@ -91,10 +91,7 @@ window.onload = function () {
 
         task.title = document.getElementById("inputTitle").value;
         task.text = document.getElementById("inputText").value;
-
         task.color = document.querySelector("input[name=gridRadiosColor]:checked").value;
-        console.log(document.querySelector("input[name=gridRadiosColor]:checked").value);
-
         task.priority = document.querySelector("input[name=gridRadios]:checked").value;
         task.timeOfCreate = +new Date();
         task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
@@ -104,13 +101,11 @@ window.onload = function () {
         task.id = "task-" + (tasksIdCounter + 1);
         tasks.push(task);
 
-
         localStorage.setItem('tasks', JSON.stringify(tasks));
         localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
 
         document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
     }
-
 
     /*   delete all tasks*/
 
@@ -120,7 +115,6 @@ window.onload = function () {
 
         localStorage.clear();
         document.location.reload(true);
-
     };
 
 
@@ -146,31 +140,26 @@ window.onload = function () {
         let buttonType = e.target.getAttribute("value");
 
 
-        /*    -complete Task*/
+        /*    - complete Task*/
 
         if (buttonType === "complete") {
-
             tasks.forEach(function (item, i, arr) {
 
                 if (item.id + "-complete" === currentId) {
-
                     tasks[i].completed = true;
                 }
             })
 
             localStorage.setItem('tasks', JSON.stringify(tasks));
             renderTasks(tasks);
-
         }
 
         /*    -delete Task*/
 
         if (buttonType === "delete") {
-
             tasks.forEach(function (item, i, arr) {
 
                 if (item.id + "-delete" === currentId) {
-
                     tasks.splice(i, 1);
                 }
             })
@@ -181,7 +170,6 @@ window.onload = function () {
 
         /*    -edit Task*/
         if (buttonType === "edit") {
-
             document.getElementById("addTaskButton").innerText = "Edit task";
             document.getElementById("exampleModalLabel").innerText = "Edit task";
             document.getElementById("addTaskButton").addEventListener("click", changeData, true);
@@ -219,6 +207,7 @@ window.onload = function () {
 
     /*sort tasks*/
 
+    /*sort up*/
     document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
 
     function sortUp() {
@@ -226,10 +215,13 @@ window.onload = function () {
         let sorted = tasks.sort(function (a, b) {
             return a.timeOfCreate - b.timeOfCreate
         })
+
         localStorage.setItem('tasks', JSON.stringify(sorted));
         renderTasks(tasks);
         addEditButtons();
     }
+
+    /*sort down*/
 
     document.getElementById("sortDownButton").addEventListener("click", sortDown, true);
 
@@ -244,6 +236,9 @@ window.onload = function () {
         addEditButtons();
     }
 };
+
+
+
 
 /*tasks Counter*/
 
@@ -263,7 +258,6 @@ function taskCounter(tasks) {
 
     document.getElementById("toDoHeader").innerText = "ToDo (" + tasksCount + ")";
     document.getElementById("completedHeader").innerText = "Comleted (" + completedTasksCount + ")";
-
 };
 
 
