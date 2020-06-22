@@ -4,7 +4,8 @@ window.onload = function () {
     /*app theme*/
 
 
-    let installTheme=()=>{
+    let installTheme = () => {
+
         let currentTheme = JSON.parse(localStorage.getItem('theme'));
 
         if (currentTheme === "appThemeBlack") {
@@ -14,11 +15,9 @@ window.onload = function () {
         if (currentTheme === "appThemeWhite") {
             document.getElementById("appBody").setAttribute("class", "whiteBody")
         }
-
     };
 
     installTheme();
-
 
     document.getElementById("appThemeWhite").addEventListener("click", setAppTheme, true);
     document.getElementById("appThemeBlack").addEventListener("click", setAppTheme, true);
@@ -50,6 +49,7 @@ window.onload = function () {
 
 
     if (localStorage.getItem('tasks')) {
+
         tasks = JSON.parse(localStorage.getItem('tasks'));
         tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
 
@@ -58,9 +58,6 @@ window.onload = function () {
         tasks = [];
         tasksIdCounter = 0;
     }
-
-
-    console.log(tasks);
 
     renderTasks(tasks);
     taskCounter(tasks);
@@ -71,32 +68,29 @@ window.onload = function () {
     document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
     function putListener() {
+
+        document.getElementById("addTaskButton").innerText = "Add task";
+        document.getElementById("exampleModalLabel").innerText = "Add task";
         document.getElementById("addTaskButton").addEventListener("click", pullData, true);
+
     };
 
 
     function pullData(e) {
 
         let task = {};
+        let currentDate = new Date();
+        let minutes = currentDate.getMinutes() <= 9 ? ("0" + currentDate.getMinutes()) : currentDate.getMinutes();
 
         task.title = document.getElementById("inputTitle").value;
         task.text = document.getElementById("inputText").value;
         task.priority = document.querySelector("input[name=gridRadios]:checked").value;
-
-        let currentDate = new Date();
-
-
         task.timeOfCreate = +new Date();
-
-        let minutes = currentDate.getMinutes() <= 9 ? ("0" + currentDate.getMinutes()) : currentDate.getMinutes();
-
         task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
             currentDate.getDay() + "." + "0" + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
 
         task.completed = false;
-
         task.id = "task-" + (tasksIdCounter + 1);
-
         tasks.push(task)
 
         localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -121,12 +115,12 @@ window.onload = function () {
     /*add edit buttons listeners*/
 
     let addEditButtons = () => {
+
         let editButtons = document.querySelectorAll(".editTaskButton");
 
         for (let i = 0; i < editButtons.length; i++) {
             editButtons[i].addEventListener("click", changeTask, true)
         }
-
     };
 
     addEditButtons();
@@ -140,11 +134,12 @@ window.onload = function () {
         let buttonType = e.target.getAttribute("value");
 
 
-        /*    complete Task*/
+        /*    -complete Task*/
+
         if (buttonType === "complete") {
 
-
             tasks.forEach(function (item, i, arr) {
+
                 if (item.id + "-complete" === currentId) {
 
                     tasks[i].completed = true;
@@ -156,11 +151,12 @@ window.onload = function () {
 
         }
 
+        /*    -delete Task*/
 
-        /*    delete Task*/
         if (buttonType === "delete") {
 
             tasks.forEach(function (item, i, arr) {
+
                 if (item.id + "-delete" === currentId) {
 
                     tasks.splice(i, 1);
@@ -171,15 +167,17 @@ window.onload = function () {
             renderTasks(tasks);
         }
 
-        /*    edit Task*/
+        /*    -edit Task*/
         if (buttonType === "edit") {
 
+            document.getElementById("addTaskButton").innerText = "Edit task";
+            document.getElementById("exampleModalLabel").innerText = "Edit task";
             document.getElementById("addTaskButton").addEventListener("click", changeData, true);
-
 
             let currentEditTask = null;
 
             tasks.forEach(function (item, i, arr) {
+
                 if (item.id + "-edit" === currentId) {
                     document.getElementById("inputTitle").value = item.title;
                     document.getElementById("inputText").value = item.text;
@@ -190,14 +188,13 @@ window.onload = function () {
 
             function changeData() {
 
-
                 tasks[currentEditTask].title = document.getElementById("inputTitle").value;
                 tasks[currentEditTask].text = document.getElementById("inputText").value;
                 tasks[currentEditTask].priority = document.querySelector("input[name=gridRadios]:checked").value;
 
-
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks(tasks);
+
             };
 
         }
@@ -211,7 +208,6 @@ window.onload = function () {
 
     document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
 
-
     function sortUp() {
 
         let sorted = tasks.sort(function (a, b) {
@@ -222,25 +218,19 @@ window.onload = function () {
         addEditButtons();
     }
 
-
     document.getElementById("sortDownButton").addEventListener("click", sortDown, true);
-
 
     function sortDown() {
 
         let sorted = tasks.sort(function (a, b) {
             return b.timeOfCreate - a.timeOfCreate
         })
+
         localStorage.setItem('tasks', JSON.stringify(sorted));
         renderTasks(tasks);
         addEditButtons();
     }
-
-
-}
-
-
-;
+};
 
 /*tasks Counter*/
 
@@ -255,6 +245,7 @@ function taskCounter(tasks) {
             completedTasksCount++
         }
     })
+
     tasksCount = (tasks.length - completedTasksCount) > 0 ? tasks.length - completedTasksCount : 0;
 
     document.getElementById("toDoHeader").innerText = "ToDo (" + tasksCount + ")";
@@ -269,7 +260,6 @@ let renderTasks = (tasks) => {
     let tasksInProgress = [];
 
     tasks.forEach(function (item, i, arr) {
-
 
         let editMenu = item.completed ?
 
@@ -329,4 +319,4 @@ let renderTasks = (tasks) => {
 
     taskCounter(tasks);
 
-}
+};
