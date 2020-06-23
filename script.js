@@ -44,23 +44,26 @@ window.onload = function () {
     /*check localStorage and rendering tasks*/
 
     let tasks = [];
-    let tasksIdCounter = 0;
-
 
     if (localStorage.getItem('tasks')) {
         tasks = JSON.parse(localStorage.getItem('tasks'));
-        tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
     } else {
         tasks = [];
-        tasksIdCounter = 0;
     }
 
     renderTasks(tasks);
     taskCounter(tasks);
 
+
     /*add task*/
 
     document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
+
+
+    /*add edit task listener*/
+
+    document.querySelector("#currentTasks").addEventListener("click", changeTask, true);
+    document.querySelector("#completedTasks").addEventListener("click", changeTask, true);
 
     function putListener() {
 
@@ -84,8 +87,15 @@ window.onload = function () {
 
 
     function pullData(e) {
-
         e.preventDefault();
+
+        let tasksIdCounter = 0;
+
+        if (localStorage.getItem('tasks')) {
+            tasksIdCounter = JSON.parse(localStorage.getItem('tasksIdCounter'));
+        } else {
+            tasksIdCounter = 0;
+        }
 
         let task = {};
         let currentDate = new Date();
@@ -107,10 +117,7 @@ window.onload = function () {
         localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
 
         renderTasks(tasks);
-        addEditButtons();
         document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
-
-
     }
 
     /*   delete all tasks*/
@@ -125,27 +132,12 @@ window.onload = function () {
     };
 
 
-    /*add edit buttons listeners*/
-
-    let addEditButtons = () => {
-
-        let editButtons = document.querySelectorAll(".editTaskButton");
-
-        for (let i = 0; i < editButtons.length; i++) {
-            editButtons[i].addEventListener("click", changeTask, true)
-        }
-    };
-
-    addEditButtons();
-
-
     /*change task*/
 
     function changeTask(e) {
 
         let currentId = e.target.getAttribute("id");
         let buttonType = e.target.getAttribute("value");
-
 
         /*    - complete Task*/
 
@@ -208,8 +200,6 @@ window.onload = function () {
 
         }
 
-        addEditButtons();
-
     }
 
     /*sort tasks*/
@@ -225,7 +215,6 @@ window.onload = function () {
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
         renderTasks(tasks);
-        addEditButtons();
     }
 
     /*sort down*/
@@ -240,7 +229,6 @@ window.onload = function () {
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
         renderTasks(tasks);
-        addEditButtons();
     }
 };
 
@@ -333,6 +321,7 @@ let renderTasks = (tasks) => {
 
     document.getElementById("currentTasks").innerHTML = tasksInProgress.join("");
     document.getElementById("completedTasks").innerHTML = tasksCompleted.join("");
+
     taskCounter(tasks);
 
 };
