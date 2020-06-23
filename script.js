@@ -3,41 +3,34 @@ window.onload = function () {
 
     /*app theme*/
 
-    let installTheme = () => {
+    let installTheme = (checked) => {
 
-        let currentTheme = JSON.parse(localStorage.getItem('theme'));
+        let currentTheme = checked ? checked : JSON.parse(localStorage.getItem('theme'));
 
-        if (currentTheme === "appThemeBlack") {
-            document.getElementById("appBody").setAttribute("class", "darkBody")
-        }
-
-        if (currentTheme === "appThemeWhite") {
-            document.getElementById("appBody").setAttribute("class", "whiteBody")
+        switch (currentTheme) {
+            case "appThemeBlack":
+                document.getElementById("appBody").setAttribute("class", "darkBody")
+                document.getElementById("appThemeWhite").classList.remove("active");
+                document.getElementById("appThemeBlack").classList.add("active");
+                localStorage.setItem('theme', JSON.stringify(currentTheme));
+                break
+            case "appThemeWhite":
+                document.getElementById("appBody").setAttribute("class", "whiteBody")
+                document.getElementById("appThemeBlack").classList.remove("active");
+                document.getElementById("appThemeWhite").classList.add("active");
+                localStorage.setItem('theme', JSON.stringify(currentTheme));
+                break
         }
     };
 
     installTheme();
 
-    document.getElementById("appThemeWhite").addEventListener("click", setAppTheme, true);
-    document.getElementById("appThemeBlack").addEventListener("click", setAppTheme, true);
-
+    document.getElementsByClassName("themes-toggle")[0].addEventListener("click", setAppTheme, true);
 
     function setAppTheme(e) {
-
         let checkedTheme = e.target.getAttribute("id");
-
-        if (checkedTheme === "appThemeWhite") {
-            document.getElementById("appThemeWhite").checked = true;
-            document.getElementById("appBody").setAttribute("class", "whiteBody")
-            localStorage.setItem('theme', JSON.stringify(checkedTheme));
-        }
-        ;
-        if (checkedTheme === "appThemeBlack") {
-            document.getElementById("appThemeBlack").checked = true;
-            document.getElementById("appBody").setAttribute("class", "darkBody")
-            localStorage.setItem('theme', JSON.stringify(checkedTheme));
-        }
-
+        console.log(checkedTheme);
+        installTheme(checkedTheme);
     };
 
 
@@ -60,7 +53,7 @@ window.onload = function () {
     document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
 
-    /*add edit task listener*/
+    /*add edit task listeners*/
 
     document.querySelector("#currentTasks").addEventListener("click", changeTask, true);
     document.querySelector("#completedTasks").addEventListener("click", changeTask, true);
