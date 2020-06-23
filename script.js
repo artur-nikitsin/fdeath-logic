@@ -85,6 +85,8 @@ window.onload = function () {
 
     function pullData(e) {
 
+        e.preventDefault();
+
         let task = {};
         let currentDate = new Date();
         let minutes = currentDate.getMinutes() <= 9 ? ("0" + currentDate.getMinutes()) : currentDate.getMinutes();
@@ -104,7 +106,11 @@ window.onload = function () {
         localStorage.setItem('tasks', JSON.stringify(tasks));
         localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
 
+        renderTasks(tasks);
+        addEditButtons();
         document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
+
+
     }
 
     /*   delete all tasks*/
@@ -115,6 +121,7 @@ window.onload = function () {
 
         localStorage.clear();
         document.location.reload(true);
+
     };
 
 
@@ -196,7 +203,7 @@ window.onload = function () {
 
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks(tasks);
-
+                document.getElementById("addTaskButton").removeEventListener("click", changeData, true);
             };
 
         }
@@ -238,8 +245,6 @@ window.onload = function () {
 };
 
 
-
-
 /*tasks Counter*/
 
 function taskCounter(tasks) {
@@ -270,50 +275,55 @@ let renderTasks = (tasks) => {
 
         let editMenu = item.completed ?
 
-            "<div class=\"dropdown m-2 dropleft\">" +
-            "<button class=\"btn btn-secondary h-100\" type=\"button\" id=\"dropdownMenuItem1\" " +
-            "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
-            "<i class=\"fas fa-ellipsis-v\" aria-hidden=\"true\"></i>" +
-            "</button>" +
-            "<div class=\"dropdown-menu p-2 flex-column\" aria-labelledby=\"dropdownMenuItem1\">" +
-            "<button value=\"delete\" type=\"button\" class=\"btn btn-danger w-100  editTaskButton\" " +
-            "id=" + item.id + "-delete" + ">Delete</button>" +
-            "</div>" +
-            "</div>"
+            `<div class="dropdown m-2 dropleft">
+                <button class="btn btn-secondary h-100" type="button" id="dropdownMenuItem1" 
+                data-toggle="dropdown\" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                </button>
+                <div class="dropdown-menu p-2 flex-column" aria-labelledby="dropdownMenuItem1">
+                    <button value="delete" type="button" class="btn btn-danger w-100  editTaskButton" 
+                    id= ${item.id + "-delete"} >Delete</button> 
+                </div>
+            </div>`
 
             :
 
-            "<div class=\"dropdown m-2 dropleft\">" +
-            "<button class=\"btn btn-secondary h-100\" type=\"button\" id=\"dropdownMenuItem1\" " +
-            "data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">" +
-            "<i class=\"fas fa-ellipsis-v\" aria-hidden=\"true\"></i>" +
-            "</button>" +
-            "<div class=\"dropdown-menu p-2 flex-column\" aria-labelledby=\"dropdownMenuItem1\">" +
-            "<button  value=\"complete\" type=\"button\" class=\"btn btn-success w-100  editTaskButton\" " +
-            "id=" + item.id + "-complete" + ">Complete</button>" +
-            "<button value=\"edit\" type=\"button\" class=\"btn btn-info w-100 my-2  editTaskButton\" " +
-            "id=" + item.id + "-edit" + " data-toggle=\"modal\"  data-target=\"#exampleModal\">Edit</button>" +
-            "<button value=\"delete\" type=\"button\" class=\"btn btn-danger w-100  editTaskButton\" " +
-            "id=" + item.id + "-delete" + ">Delete</button>" +
-            "</div>" +
-            "</div>";
+            `<div class="dropdown m-2 dropleft">
+
+                <button class="btn btn-secondary h-100" type="button" id="dropdownMenuItem1"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                </button>
+                
+                <div class="dropdown-menu p-2 flex-column" aria-labelledby="dropdownMenuItem1">
+                
+                    <button  value="complete" type="button" class="btn btn-success w-100  editTaskButton" 
+                    id=${item.id + "-complete"}> Complete</button>
+                    
+                    <button value="edit" type="button" class="btn btn-info w-100 my-2  editTaskButton" 
+                    id=${item.id + "-edit"}  + " data-toggle="modal"  data-target="#exampleModal">Edit</button>
+                    
+                    <button value="delete" type="button" class="btn btn-danger w-100  editTaskButton" 
+                    id=${item.id + "-delete"}>Delete</button>
+                
+                </div>
+            </div>`;
 
 
-        let currentTask = "<li class=\"list-group-item d-flex w-100 mb-2 " + item.color + "\">" +
-            "<div class=\"w-100 mr-2\">" +
-            "<div class=\"d-flex w-100 justify-content-between\">" +
-            "<h5 class=\"mb-1\">" + item.title + "</h5>" +
-            " <div>" +
-
-            "<small class=\"mr-2\">" + item.priority + " priority" + "</small>" +
-            "<small>" + item.timeOfCreateString + "</small>" +
-            "</div>" +
-
-            "</div>" +
-            "<p class=\"mb-1 w-100\">" + item.text + "</p>" +
-            "</div>" +
-            editMenu +
-            "</li>";
+        let currentTask =
+            `<li class="list-group-item d-flex w-100 mb-2 ${item.color}">
+                <div class="w-100 mr-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">  ${item.title}  </h5>
+                             <div>
+                                <small class="mr-2">  ${item.priority + " priority"}</small>
+                                <small>  ${item.timeOfCreateString}  </small>
+                            </div>
+                    </div>
+                <p class="mb-1 w-100">  ${item.text} </p>
+                </div>
+                ${editMenu}
+            </li>`;
 
         if (item.completed === true) {
             tasksCompleted.push(currentTask);
@@ -323,7 +333,6 @@ let renderTasks = (tasks) => {
 
     document.getElementById("currentTasks").innerHTML = tasksInProgress.join("");
     document.getElementById("completedTasks").innerHTML = tasksCompleted.join("");
-
     taskCounter(tasks);
 
 };
