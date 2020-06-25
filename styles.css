@@ -22,12 +22,18 @@
 
 .High {
     background-color: rgba(239, 14, 14, 0.5) !important;
+    cursor: pointer;
+    user-select: none;
 }
 
 .Low {
     background-color: rgba(58, 155, 26, 0.5) !important;
+    cursor: pointer;
+    user-select: none;
 }
 
 .Medium {
     background-color: rgba(235, 239, 14, 0.5) !important;
+    cursor: pointer;
+    user-select: none;
 }

@@ -58,6 +58,20 @@ window.onload = function () {
     document.querySelector("#currentTasks").addEventListener("click", changeTask, true);
     document.querySelector("#completedTasks").addEventListener("click", changeTask, true);
 
+
+    let forms = document.getElementsByClassName('needs-validation');
+    let validatedForms = null
+    let validation = Array.prototype.filter.call(forms, function (form) {
+        form.addEventListener('submit', function (event) {
+            if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+            validatedForms = form;
+        }, false);
+    });
+
     function putListener() {
 
         let checkedPriorityRadio = document.querySelector("input[name=gridRadios]:checked");
@@ -65,6 +79,9 @@ window.onload = function () {
             checkedPriorityRadio.checked = false
         }
 
+        if (validatedForms) {
+            validatedForms.classList.remove('was-validated');
+        }
 
         document.getElementById("inputTitle").value = "";
         document.getElementById("inputText").value = "";
@@ -76,7 +93,6 @@ window.onload = function () {
 
 
     function pullData(e) {
-        e.preventDefault();
 
         let tasksIdCounter = 0;
 
@@ -99,13 +115,18 @@ window.onload = function () {
 
         task.completed = false;
         task.id = "task-" + (tasksIdCounter + 1);
-        tasks.push(task);
 
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
+        if (task.title.length && task.text.length && task.priority.length) {
+            tasks.push(task);
 
-        renderTasks(tasks);
-        document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
+
+            renderTasks(tasks);
+            document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
+        }
+
+
     }
 
     /*   delete all tasks*/
@@ -169,7 +190,7 @@ window.onload = function () {
                     document.getElementById("inputTitle").value = item.title;
                     document.getElementById("inputText").value = item.text;
                     document.getElementById(item.priority).checked = true;
-                   /* document.getElementById(item.color).checked = true;*/
+                    /* document.getElementById(item.color).checked = true;*/
                     currentEditTask = i;
                 }
             });
@@ -179,7 +200,7 @@ window.onload = function () {
                 tasks[currentEditTask].title = document.getElementById("inputTitle").value;
                 tasks[currentEditTask].text = document.getElementById("inputText").value;
                 tasks[currentEditTask].priority = document.querySelector("input[name=gridRadios]:checked").value;
-             /*   tasks[currentEditTask].color = document.querySelector("input[name=gridRadiosColor]:checked").value;*/
+                /*   tasks[currentEditTask].color = document.querySelector("input[name=gridRadiosColor]:checked").value;*/
 
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks(tasks);
@@ -218,6 +239,7 @@ window.onload = function () {
         localStorage.setItem('tasks', JSON.stringify(sorted));
         renderTasks(tasks);
     }
+
 };
 
 
