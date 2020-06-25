@@ -109,7 +109,7 @@ window.onload = function () {
         task.title = document.getElementById("inputTitle").value;
         task.text = document.getElementById("inputText").value;
         task.priority = document.querySelector("input[name=gridRadios]:checked").value;
-        task.position ="in-progress"
+        task.position = "in-progress"
         task.timeOfCreate = +new Date();
         task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
             currentDate.getDay() + "." + "0" + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
@@ -213,6 +213,101 @@ window.onload = function () {
 
     }
 
+
+    /* Drag’n’Drop*/
+    let dragableTask = null;
+    let newTasksArea = null;
+
+    function addDragDropListeners() {
+
+        let dragableTasks = document.querySelectorAll(".list-group-item");
+
+        [].forEach.call(dragableTasks, function (task) {
+            task.addEventListener('dragstart', handleDragStart, false);
+            task.addEventListener('dragenter', handleDragEnterItem, false);
+            task.addEventListener('dragover', handleDragOverItem, false);
+            task.addEventListener('dragleave', handleDragLeaveItem, false);
+            task.addEventListener('drop', handleDragDrop, false);
+        });
+
+        let completedTasksArea = document.querySelector("#completedTasks");
+        completedTasksArea.addEventListener('dragenter', handleDragEnter, false);
+        completedTasksArea.addEventListener('dragover', handleDragOver, false);
+        completedTasksArea.addEventListener('drop', handleDragDrop, false);
+
+
+        let inProgressTaskArea = document.querySelector("#currentTasks");
+        inProgressTaskArea.addEventListener('dragenter', handleDragEnter, false);
+        inProgressTaskArea.addEventListener('dragover', handleDragOver, false);
+        inProgressTaskArea.addEventListener('drop', handleDragDrop, false);
+
+
+    };
+
+
+    addDragDropListeners();
+
+    function handleDragStart(e) {
+        dragableTask = this.getAttribute("id");
+    }
+
+
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault(); // Necessary. Allows us to drop.
+        }
+
+        e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+        return false;
+    }
+
+    function handleDragOverItem(e) {
+        if (e.preventDefault) {
+            e.preventDefault(); // Necessary. Allows us to drop.
+            /*console.log(this);*/
+        }
+
+        e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+        return false;
+    }
+
+    function handleDragEnterItem(e) {
+    }
+
+    function handleDragEnter(e) {
+        newTasksArea = this.getAttribute("id");
+    }
+
+
+    function handleDragLeaveItem(e) {
+    }
+
+
+    function handleDragDrop(e) {
+
+        tasks.forEach(function (item, i) {
+
+            if (item.id === dragableTask) {
+
+                if (tasks[i].position === "in-completed" && newTasksArea === "currentTasks") {
+
+                    tasks[i].position = "in-progress"
+                }
+                if (tasks[i].position === "in-progress" && newTasksArea === "completedTasks") {
+                    tasks[i].position = "in-completed"
+                }
+                ;
+
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+        })
+        renderTasks(tasks);
+        taskCounter(tasks);
+        addDragDropListeners();
+    };
+
+
     /*sort tasks*/
 
     /*sort up*/
@@ -254,7 +349,7 @@ function taskCounter(tasks) {
 
     tasks.forEach(function (item, i) {
 
-        if (item.completed) {
+        if (item.position === "in-completed") {
             completedTasksCount++
         }
     })
@@ -262,7 +357,7 @@ function taskCounter(tasks) {
     tasksCount = (tasks.length - completedTasksCount) > 0 ? tasks.length - completedTasksCount : 0;
 
     document.getElementById("toDoHeader").innerText = "ToDo (" + tasksCount + ")";
-    document.getElementById("completedHeader").innerText = "Comleted (" + completedTasksCount + ")";
+    document.getElementById("completedHeader").innerText = "Completed (" + completedTasksCount + ")";
 };
 
 
@@ -311,7 +406,7 @@ let renderTasks = (tasks) => {
 
 
         let currentTask =
-            `<li class="list-group-item d-flex w-100 mb-2 ${item.priority}">
+            `<li class="list-group-item d-flex w-100 mb-2 ${item.priority}" draggable="true" id="${item.id}">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">  ${item.title}  </h5>

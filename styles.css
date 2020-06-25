@@ -12,7 +12,8 @@
 }
 
 .darkBody .modal-content {
-    background-color: rgb(168, 168, 168); !important;
+    background-color: rgb(168, 168, 168);
+!important;
 }
 
 .darkBody .btn-primary {
@@ -36,4 +37,20 @@
     background-color: rgba(235, 239, 14, 0.5) !important;
     cursor: pointer;
     user-select: none;
+}
+
+/*.over {
+    opacity: 0.7;
+    transition: opacity 100ms linear;
+}*/
+
+.list-group {
+    min-height: 100px !important;
+
+}
+
+.list-group-item:hover,
+.list-group-item:focus {
+    opacity: 0.7;
+    transition: opacity 100ms linear;
 }
