@@ -20,14 +20,14 @@
     border-color: #000000 !important;
 }
 
-.red-task {
+.High {
     background-color: rgba(239, 14, 14, 0.5) !important;
 }
 
-.green-task {
+.Low {
     background-color: rgba(58, 155, 26, 0.5) !important;
 }
 
-.yellow-task {
+.Medium {
     background-color: rgba(235, 239, 14, 0.5) !important;
 }

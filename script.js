@@ -65,10 +65,6 @@ window.onload = function () {
             checkedPriorityRadio.checked = false
         }
 
-        let checkedColorRadio = document.querySelector("input[name=gridRadiosColor]:checked");
-        if (checkedColorRadio) {
-            checkedColorRadio.checked = false
-        }
 
         document.getElementById("inputTitle").value = "";
         document.getElementById("inputText").value = "";
@@ -96,7 +92,6 @@ window.onload = function () {
 
         task.title = document.getElementById("inputTitle").value;
         task.text = document.getElementById("inputText").value;
-        task.color = document.querySelector("input[name=gridRadiosColor]:checked").value;
         task.priority = document.querySelector("input[name=gridRadios]:checked").value;
         task.timeOfCreate = +new Date();
         task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
@@ -174,7 +169,7 @@ window.onload = function () {
                     document.getElementById("inputTitle").value = item.title;
                     document.getElementById("inputText").value = item.text;
                     document.getElementById(item.priority).checked = true;
-                    document.getElementById(item.color).checked = true;
+                   /* document.getElementById(item.color).checked = true;*/
                     currentEditTask = i;
                 }
             });
@@ -184,7 +179,7 @@ window.onload = function () {
                 tasks[currentEditTask].title = document.getElementById("inputTitle").value;
                 tasks[currentEditTask].text = document.getElementById("inputText").value;
                 tasks[currentEditTask].priority = document.querySelector("input[name=gridRadios]:checked").value;
-                tasks[currentEditTask].color = document.querySelector("input[name=gridRadiosColor]:checked").value;
+             /*   tasks[currentEditTask].color = document.querySelector("input[name=gridRadiosColor]:checked").value;*/
 
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks(tasks);
@@ -292,7 +287,7 @@ let renderTasks = (tasks) => {
 
 
         let currentTask =
-            `<li class="list-group-item d-flex w-100 mb-2 ${item.color}">
+            `<li class="list-group-item d-flex w-100 mb-2 ${item.priority}">
                 <div class="w-100 mr-2">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">  ${item.title}  </h5>
