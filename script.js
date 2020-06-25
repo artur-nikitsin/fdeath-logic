@@ -109,6 +109,7 @@ window.onload = function () {
         task.title = document.getElementById("inputTitle").value;
         task.text = document.getElementById("inputText").value;
         task.priority = document.querySelector("input[name=gridRadios]:checked").value;
+        task.position ="in-progress"
         task.timeOfCreate = +new Date();
         task.timeOfCreateString = currentDate.getHours() + ":" + minutes + " " + "0" +
             currentDate.getDay() + "." + "0" + (currentDate.getMonth() + 1) + "." + currentDate.getFullYear();
@@ -155,6 +156,7 @@ window.onload = function () {
 
                 if (item.id + "-complete" === currentId) {
                     tasks[i].completed = true;
+                    tasks[i].position = "in-completed";
                 }
             })
 
@@ -323,7 +325,7 @@ let renderTasks = (tasks) => {
                 ${editMenu}
             </li>`;
 
-        if (item.completed === true) {
+        if (item.position === "in-completed") {
             tasksCompleted.push(currentTask);
         } else
             tasksInProgress.push(currentTask);
