@@ -1,5 +1,67 @@
 window.onload = function () {
 
+    let appState = null;
+
+
+    const getAppState = () => {
+        appState = JSON.parse(localStorage.getItem('appState'));
+        appState = appState ? appState : "signed-out"
+        setAppState(appState);
+    }
+
+    const setAppState = (newAppState) => {
+        localStorage.setItem('appState', JSON.stringify(newAppState));
+    }
+
+    getAppState();
+
+
+    const checkAppState = (state) => {
+
+        switch (state) {
+            case "signed-in":
+                document.getElementById("openSignUserModal").classList.add("hideSignButton");
+                document.getElementById("signOutButton").classList.remove("hideSignButton");
+
+
+                document.getElementById("openAddTaskModal").classList.remove("hideTaskList")
+                document.getElementById("dropdownMenuSettings").classList.remove("hideTaskList")
+
+                document.getElementById("toDoHeader").classList.remove("hideTaskList")
+                document.getElementById("completedHeader").classList.remove("hideTaskList")
+
+                document.getElementById("currentTasks").classList.remove("hideTaskList")
+                document.getElementById("completedTasks").classList.remove("hideTaskList")
+                break
+
+            case "signed-out":
+                document.getElementById("openSignUserModal").classList.remove("hideSignButton");
+                document.getElementById("signOutButton").classList.add("hideSignButton");
+
+                document.getElementById("openAddTaskModal").classList.add("hideTaskList")
+                document.getElementById("dropdownMenuSettings").classList.add("hideTaskList")
+
+                document.getElementById("toDoHeader").classList.add("hideTaskList")
+                document.getElementById("completedHeader").classList.add("hideTaskList")
+
+                document.getElementById("currentTasks").classList.add("hideTaskList")
+                document.getElementById("completedTasks").classList.add("hideTaskList")
+                break
+        }
+
+    };
+
+    checkAppState(appState);
+
+    const signOut = () => {
+        setAppState("signed-out");
+        getAppState();
+        document.location.reload(true);
+    }
+    document.getElementById("signOutButton").addEventListener("click", signOut, false)
+
+
+    console.log("appState: " + appState);
 
     /*app theme*/
 
@@ -34,27 +96,122 @@ window.onload = function () {
     };
 
 
+    /* Users*/
+
+
+    let allUsers = [];
+
+    const getUsersFromLocalStorage = () => {
+        if (localStorage.getItem('allUsers')) {
+            allUsers = JSON.parse(localStorage.getItem('allUsers'));
+        } else {
+            allUsers = [];
+        }
+    };
+    getUsersFromLocalStorage();
+
+    const setUsersToLocalStorage = (renewUsers) => {
+        localStorage.setItem('allUsers', JSON.stringify(renewUsers));
+    }
+
+
+    /* sign in/out users*/
+
+
+    document.getElementById("openSignUserModal").addEventListener("click", putSignUserListeners, true);
+
+
+    function putSignUserListeners() {
+        document.getElementById("registerUserCollapseInputs").classList.remove("show");
+
+        console.log("put  & clear listeners");
+    };
+
+
+    document.getElementById("addUserButton").addEventListener("click", addUser, true);
+
+
+    function checkModalMode(e) {
+        let collapsed = document.getElementById("registerUserCollapseInputs").classList.contains("show");
+        console.log(collapsed);
+        return collapsed ? "registration" : "sign";
+    };
+
+
+    function addUser(e) {
+
+        let signModalState = checkModalMode();
+
+        switch (signModalState) {
+
+            case "sign":
+                e.preventDefault();
+
+                console.log("sign user");
+
+                let signingUser = {};
+
+                signingUser.login = document.getElementById("inputSignLogin").value;
+                signingUser.password = document.getElementById("inputSignPassword").value;
+
+                console.log(signingUser);
+
+                getUsersFromLocalStorage();
+
+                console.log(allUsers);
+
+                allUsers.forEach(function (item, i) {
+                    if (signingUser.login === item.login)
+                        console.log("есть такой юзер");
+                    if (signingUser.password === item.password) {
+                        console.log("есть такой пароль");
+                        allUsers[i].isSigned = true;
+                        setUsersToLocalStorage(allUsers);
+                        setAppState("signed-in");
+                        document.location.reload(true);
+                    }
+                })
+
+                break;
+
+            case "registration":
+                e.preventDefault();
+                console.log("register new user");
+
+                let user = {};
+                user.login = document.getElementById("inputSignLogin").value;
+                user.password = document.getElementById("inputSignPassword").value;
+                user.name = document.getElementById("inputSignName").value;
+                user.surname = document.getElementById("inputSignSurname").value;
+                user.age = document.getElementById("inputSignAge").value;
+                user.sex = document.querySelector("input[name=gridRadiosSex]:checked").value;
+                user.isSigned = false;
+
+                allUsers.push(user);
+                setUsersToLocalStorage(allUsers);
+        }
+
+    };
+
+
     /*check localStorage and rendering tasks*/
 
     let tasks = [];
 
-    const getFromLocalStorage = () => {
+    const getTasksFromLocalStorage = () => {
         if (localStorage.getItem('tasks')) {
             tasks = JSON.parse(localStorage.getItem('tasks'));
         } else {
             tasks = [];
         }
-    }
+    };
 
-    getFromLocalStorage();
+    getTasksFromLocalStorage();
     renderTasks(tasks);
     taskCounter(tasks);
 
 
-    /*add edit task listeners*/
-
-    document.querySelector("#currentTasks").addEventListener("click", changeTask, true);
-    document.querySelector("#completedTasks").addEventListener("click", changeTask, true);
+    /*add task form validation*/
 
 
     let forms = document.getElementsByClassName('needs-validation');
@@ -126,7 +283,7 @@ window.onload = function () {
             localStorage.setItem('tasks', JSON.stringify(tasks));
             localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
 
-            getFromLocalStorage();
+            getTasksFromLocalStorage();
             renderTasks(tasks);
             document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
         }
@@ -146,6 +303,12 @@ window.onload = function () {
     };
 
 
+    /*add edit task listeners*/
+
+    document.querySelector("#currentTasks").addEventListener("click", changeTask, true);
+    document.querySelector("#completedTasks").addEventListener("click", changeTask, true);
+
+
     /*change task*/
 
     function changeTask(e) {
@@ -156,7 +319,7 @@ window.onload = function () {
         /*    - complete Task*/
 
         if (buttonType === "complete") {
-            getFromLocalStorage();
+            getTasksFromLocalStorage();
             tasks.forEach(function (item, i, arr) {
 
                 if (item.id + "-complete" === currentId) {
@@ -291,7 +454,7 @@ window.onload = function () {
 
 
     function handleDragDrop(e) {
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         tasks.forEach(function (item, i) {
 
             if (item.id === dragableTask) {
@@ -308,7 +471,7 @@ window.onload = function () {
                 localStorage.setItem('tasks', JSON.stringify(tasks));
             }
         })
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         renderTasks(tasks);
         taskCounter(tasks);
         addDragDropListeners();
@@ -321,13 +484,13 @@ window.onload = function () {
     document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
 
     function sortUp() {
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         let sorted = tasks.sort(function (a, b) {
             return a.timeOfCreate - b.timeOfCreate
         })
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         renderTasks(tasks);
     }
 
@@ -336,13 +499,13 @@ window.onload = function () {
     document.getElementById("sortDownButton").addEventListener("click", sortDown, true);
 
     function sortDown() {
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         let sorted = tasks.sort(function (a, b) {
             return b.timeOfCreate - a.timeOfCreate
         })
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
-        getFromLocalStorage();
+        getTasksFromLocalStorage();
         renderTasks(tasks);
     }
 
@@ -370,7 +533,7 @@ function taskCounter(tasks) {
 };
 
 
-let renderTasks = (tasks) => {
+let renderTasks = (tasks, state) => {
 
     let tasksCompleted = [];
     let tasksInProgress = [];
