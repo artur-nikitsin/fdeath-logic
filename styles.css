@@ -39,10 +39,10 @@
     user-select: none;
 }
 
-/*.over {
+.over {
     opacity: 0.7;
     transition: opacity 100ms linear;
-}*/
+}
 
 .list-group {
     min-height: 100px !important;
@@ -51,6 +51,7 @@
 
 .list-group-item:hover,
 .list-group-item:focus {
-    opacity: 0.7;
-    transition: opacity 100ms linear;
+    border: 1px dashed black;
+   /* opacity: 0.7;
+    transition: opacity 100ms linear;*/
 }

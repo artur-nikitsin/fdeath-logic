@@ -38,19 +38,17 @@ window.onload = function () {
 
     let tasks = [];
 
-    if (localStorage.getItem('tasks')) {
-        tasks = JSON.parse(localStorage.getItem('tasks'));
-    } else {
-        tasks = [];
+    const getFromLocalStorage = () => {
+        if (localStorage.getItem('tasks')) {
+            tasks = JSON.parse(localStorage.getItem('tasks'));
+        } else {
+            tasks = [];
+        }
     }
 
+    getFromLocalStorage();
     renderTasks(tasks);
     taskCounter(tasks);
-
-
-    /*add task*/
-
-    document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
 
     /*add edit task listeners*/
@@ -71,6 +69,11 @@ window.onload = function () {
             validatedForms = form;
         }, false);
     });
+
+
+    /*add task*/
+
+    document.getElementById("openAddTaskModal").addEventListener("click", putListener, true);
 
     function putListener() {
 
@@ -123,6 +126,7 @@ window.onload = function () {
             localStorage.setItem('tasks', JSON.stringify(tasks));
             localStorage.setItem('tasksIdCounter', JSON.stringify(tasksIdCounter + 1));
 
+            getFromLocalStorage();
             renderTasks(tasks);
             document.getElementById("addTaskButton").removeEventListener("click", pullData, true);
         }
@@ -152,6 +156,7 @@ window.onload = function () {
         /*    - complete Task*/
 
         if (buttonType === "complete") {
+            getFromLocalStorage();
             tasks.forEach(function (item, i, arr) {
 
                 if (item.id + "-complete" === currentId) {
@@ -281,11 +286,12 @@ window.onload = function () {
 
 
     function handleDragLeaveItem(e) {
+
     }
 
 
     function handleDragDrop(e) {
-
+        getFromLocalStorage();
         tasks.forEach(function (item, i) {
 
             if (item.id === dragableTask) {
@@ -302,6 +308,7 @@ window.onload = function () {
                 localStorage.setItem('tasks', JSON.stringify(tasks));
             }
         })
+        getFromLocalStorage();
         renderTasks(tasks);
         taskCounter(tasks);
         addDragDropListeners();
@@ -314,12 +321,13 @@ window.onload = function () {
     document.getElementById("sortUpButton").addEventListener("click", sortUp, true);
 
     function sortUp() {
-
+        getFromLocalStorage();
         let sorted = tasks.sort(function (a, b) {
             return a.timeOfCreate - b.timeOfCreate
         })
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
+        getFromLocalStorage();
         renderTasks(tasks);
     }
 
@@ -328,12 +336,13 @@ window.onload = function () {
     document.getElementById("sortDownButton").addEventListener("click", sortDown, true);
 
     function sortDown() {
-
+        getFromLocalStorage();
         let sorted = tasks.sort(function (a, b) {
             return b.timeOfCreate - a.timeOfCreate
         })
 
         localStorage.setItem('tasks', JSON.stringify(sorted));
+        getFromLocalStorage();
         renderTasks(tasks);
     }
 
