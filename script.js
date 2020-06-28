@@ -24,6 +24,9 @@ window.onload = function () {
                 document.getElementById("signOutButton").classList.remove("hideSignButton");
 
 
+                document.getElementById("sortUpButton").classList.remove("hideTaskList");
+                document.getElementById("sortDownButton").classList.remove("hideTaskList");
+
                 document.getElementById("openAddTaskModal").classList.remove("hideTaskList")
                 document.getElementById("dropdownMenuSettings").classList.remove("hideTaskList")
 
@@ -37,6 +40,10 @@ window.onload = function () {
             case "signed-out":
                 document.getElementById("openSignUserModal").classList.remove("hideSignButton");
                 document.getElementById("signOutButton").classList.add("hideSignButton");
+
+
+                document.getElementById("sortUpButton").classList.add("hideTaskList");
+                document.getElementById("sortDownButton").classList.add("hideTaskList");
 
                 document.getElementById("openAddTaskModal").classList.add("hideTaskList")
                 document.getElementById("dropdownMenuSettings").classList.add("hideTaskList")
@@ -58,8 +65,8 @@ window.onload = function () {
         getAppState();
         document.location.reload(true);
     }
-    document.getElementById("signOutButton").addEventListener("click", signOut, false)
 
+    document.getElementById("signOutButton").addEventListener("click", signOut, false)
 
     console.log("appState: " + appState);
 
@@ -108,6 +115,7 @@ window.onload = function () {
             allUsers = [];
         }
     };
+
     getUsersFromLocalStorage();
 
     const setUsersToLocalStorage = (renewUsers) => {
@@ -133,9 +141,21 @@ window.onload = function () {
 
     function checkModalMode(e) {
         let collapsed = document.getElementById("registerUserCollapseInputs").classList.contains("show");
-        console.log(collapsed);
         return collapsed ? "registration" : "sign";
     };
+
+
+    let formInputs = document.getElementsByClassName("form-control");
+
+    function deleteInputWarnings() {
+        this.classList.remove("is-invalid");
+        this.classList.remove("is-valid");
+    }
+
+
+    [].forEach.call(formInputs, function (input) {
+        input.addEventListener("input", deleteInputWarnings, false)
+    });
 
 
     function addUser(e) {
@@ -147,68 +167,89 @@ window.onload = function () {
             case "sign":
                 e.preventDefault();
 
-                console.log("sign user");
-
                 let signingUser = {};
 
                 signingUser.login = document.getElementById("inputSignLogin").value;
                 signingUser.password = document.getElementById("inputSignPassword").value;
 
-                console.log(signingUser);
-
                 getUsersFromLocalStorage();
 
-                console.log(allUsers);
-
+                let coincidingUser = null;
+                let coincidingUserPosition = 0;
                 allUsers.forEach(function (item, i) {
-                    if (signingUser.login === item.login)
-                        console.log("есть такой юзер");
-                    if (signingUser.password === item.password) {
-                        console.log("есть такой пароль");
-                        allUsers[i].isSigned = true;
+                    if (signingUser.login === item.login) {
+                        coincidingUser = item;
+                        coincidingUserPosition = i;
+                    }
+                });
+
+                if (coincidingUser) {
+                    document.getElementById("inputSignLogin").classList.remove("is-invalid");
+                    document.getElementById("inputSignLogin").classList.add("is-valid");
+
+                    if (signingUser.password === coincidingUser.password) {
+                        document.getElementById("inputSignPassword").classList.remove("is-invalid");
+                        document.getElementById("inputSignPassword").classList.add("is-valid");
+                        allUsers[coincidingUserPosition].isSigned = true;
                         setUsersToLocalStorage(allUsers);
                         setAppState("signed-in");
                         document.location.reload(true);
+                    } else {
+
+                        document.querySelector(".invalidPasswordWarning").innerText = "Please check the password.";
+                        document.getElementById("inputSignPassword").classList.add("is-invalid");
                     }
-                })
+
+
+                } else {
+                    document.querySelector(".invalidLoginWarning").innerText = "Login does not exist. Please check.";
+                    document.getElementById("inputSignLogin").classList.remove("is-valid");
+                    document.getElementById("inputSignLogin").classList.add("is-invalid");
+                }
 
                 break;
 
             case "registration":
                 e.preventDefault();
-                console.log("register new user");
+                let registeringUser = {};
+                registeringUser.login = document.getElementById("inputSignLogin").value;
+                registeringUser.password = document.getElementById("inputSignPassword").value;
+                registeringUser.name = document.getElementById("inputSignName").value;
+                registeringUser.surname = document.getElementById("inputSignSurname").value;
+                registeringUser.age = document.getElementById("inputSignAge").value;
+                registeringUser.sex = document.querySelector("input[name=gridRadiosSex]:checked").value;
+                registeringUser.isSigned = false;
 
-                let user = {};
-                user.login = document.getElementById("inputSignLogin").value;
-                user.password = document.getElementById("inputSignPassword").value;
-                user.name = document.getElementById("inputSignName").value;
-                user.surname = document.getElementById("inputSignSurname").value;
-                user.age = document.getElementById("inputSignAge").value;
-                user.sex = document.querySelector("input[name=gridRadiosSex]:checked").value;
-                user.isSigned = false;
+                getUsersFromLocalStorage();
 
-                allUsers.push(user);
-                setUsersToLocalStorage(allUsers);
+                let duplicateUser = null;
+                allUsers.forEach(function (item, i) {
+                    if (registeringUser.login === item.login) {
+                        duplicateUser = item;
+                    }
+                });
+
+                if (duplicateUser) {
+                    document.querySelector(".invalidLoginWarning").innerText = "Login already exist. Please create another.";
+                    document.getElementById("inputSignLogin").classList.remove("is-valid");
+                    document.getElementById("inputSignLogin").classList.add("is-invalid");
+                }
+
+                const re = new RegExp('^[a-zA-Z0-9]+$');
+
+
+                if (!re.test(registeringUser.login)) {
+                    document.querySelector(".invalidLoginWarning").innerText = "Please use only latin letters and numbers";
+                    document.getElementById("inputSignLogin").classList.remove("is-valid");
+                    document.getElementById("inputSignLogin").classList.add("is-invalid");
+                }
+
+
+            /*allUsers.push(registeringUser);
+            setUsersToLocalStorage(allUsers);*/
         }
 
     };
-
-
-    /*check localStorage and rendering tasks*/
-
-    let tasks = [];
-
-    const getTasksFromLocalStorage = () => {
-        if (localStorage.getItem('tasks')) {
-            tasks = JSON.parse(localStorage.getItem('tasks'));
-        } else {
-            tasks = [];
-        }
-    };
-
-    getTasksFromLocalStorage();
-    renderTasks(tasks);
-    taskCounter(tasks);
 
 
     /*add task form validation*/
@@ -226,6 +267,23 @@ window.onload = function () {
             validatedForms = form;
         }, false);
     });
+
+
+    /*check localStorage and rendering tasks*/
+
+    let tasks = [];
+
+    const getTasksFromLocalStorage = () => {
+        if (localStorage.getItem('tasks')) {
+            tasks = JSON.parse(localStorage.getItem('tasks'));
+        } else {
+            tasks = [];
+        }
+    };
+
+    getTasksFromLocalStorage();
+    renderTasks(tasks);
+    taskCounter(tasks);
 
 
     /*add task*/
@@ -370,7 +428,6 @@ window.onload = function () {
                 tasks[currentEditTask].title = document.getElementById("inputTitle").value;
                 tasks[currentEditTask].text = document.getElementById("inputText").value;
                 tasks[currentEditTask].priority = document.querySelector("input[name=gridRadios]:checked").value;
-                /*   tasks[currentEditTask].color = document.querySelector("input[name=gridRadiosColor]:checked").value;*/
 
                 localStorage.setItem('tasks', JSON.stringify(tasks));
                 renderTasks(tasks);
