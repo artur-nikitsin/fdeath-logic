@@ -38,6 +38,7 @@ window.onload = function () {
                 break
 
             case "signed-out":
+
                 document.getElementById("openSignUserModal").classList.remove("hideSignButton");
                 document.getElementById("signOutButton").classList.add("hideSignButton");
 
@@ -68,7 +69,6 @@ window.onload = function () {
 
     document.getElementById("signOutButton").addEventListener("click", signOut, false)
 
-    console.log("appState: " + appState);
 
     /*app theme*/
 
@@ -98,7 +98,6 @@ window.onload = function () {
 
     function setAppTheme(e) {
         let checkedTheme = e.target.getAttribute("id");
-        console.log(checkedTheme);
         installTheme(checkedTheme);
     };
 
@@ -132,16 +131,21 @@ window.onload = function () {
     function putSignUserListeners() {
         document.getElementById("registerUserCollapseInputs").classList.remove("show");
 
-        console.log("put  & clear listeners");
-    };
+        let checkedGenderRadio = document.querySelector("input[name=gridRadiosGender]:checked");
+        if (checkedGenderRadio) {
+            checkedGenderRadio.checked = false
+        }
 
+        if (validatedForms) {
+            validatedForms.classList.remove('was-validated');
+        }
 
-    document.getElementById("addUserButton").addEventListener("click", addUser, true);
+        document.getElementById("inputSignLogin").value = ""
+        document.getElementById("inputSignPassword").value = ""
+        document.getElementById("inputSignName").value = ""
+        document.getElementById("inputSignSurname").value = ""
+        document.getElementById("inputSignDateOfBirth").value = ""
 
-
-    function checkModalMode(e) {
-        let collapsed = document.getElementById("registerUserCollapseInputs").classList.contains("show");
-        return collapsed ? "registration" : "sign";
     };
 
 
@@ -156,6 +160,30 @@ window.onload = function () {
     [].forEach.call(formInputs, function (input) {
         input.addEventListener("input", deleteInputWarnings, false)
     });
+
+
+    document.getElementById("addUserButton").addEventListener("click", addUser, true);
+
+    function checkModalMode(e) {
+        let collapsed = document.getElementById("registerUserCollapseInputs").classList.contains("show");
+        return collapsed ? "registration" : "sign";
+    };
+
+
+    document.querySelector("#registerNewUser").addEventListener("click", changeSubmitButton)
+
+
+    function changeSubmitButton() {
+
+        let changebleButton = document.querySelector("#addUserButton");
+
+        if (changebleButton.textContent === "Sign in") {
+            changebleButton.innerText = "Register";
+        } else {
+            changebleButton.innerText = "Sign in";
+        }
+
+    }
 
 
     function addUser(e) {
@@ -210,14 +238,19 @@ window.onload = function () {
                 break;
 
             case "registration":
+
                 e.preventDefault();
+
                 let registeringUser = {};
                 registeringUser.login = document.getElementById("inputSignLogin").value;
                 registeringUser.password = document.getElementById("inputSignPassword").value;
                 registeringUser.name = document.getElementById("inputSignName").value;
                 registeringUser.surname = document.getElementById("inputSignSurname").value;
-                registeringUser.age = document.getElementById("inputSignAge").value;
-                registeringUser.sex = document.querySelector("input[name=gridRadiosSex]:checked").value;
+                registeringUser.dateOfBirth = document.getElementById("inputSignDateOfBirth").value;
+
+                if (document.querySelector("input[name=gridRadiosGender]:checked")) {
+                    registeringUser.gender = document.querySelector("input[name=gridRadiosGender]:checked").value;
+                }
                 registeringUser.isSigned = false;
 
                 getUsersFromLocalStorage();
@@ -229,26 +262,118 @@ window.onload = function () {
                     }
                 });
 
+                let notDuplicate = false;
+                let isLoginCorrect = false;
+                let isPasswordCorrect = false;
+                let isNameCorrect = false;
+                let isSurnameCorrect = false;
+                let isDateOfBirthCorrect = false;
+                let isGenderCorrect = false;
+
+
                 if (duplicateUser) {
                     document.querySelector(".invalidLoginWarning").innerText = "Login already exist. Please create another.";
                     document.getElementById("inputSignLogin").classList.remove("is-valid");
                     document.getElementById("inputSignLogin").classList.add("is-invalid");
+                    notDuplicate = false;
+                } else {
+                    document.getElementById("inputSignLogin").classList.add("is-valid");
+                    notDuplicate = true
                 }
 
-                const re = new RegExp('^[a-zA-Z0-9]+$');
+                const regLogin = new RegExp('^[a-zA-Z0-9]+$');
 
-
-                if (!re.test(registeringUser.login)) {
+                if (!regLogin.test(registeringUser.login)) {
                     document.querySelector(".invalidLoginWarning").innerText = "Please use only latin letters and numbers";
                     document.getElementById("inputSignLogin").classList.remove("is-valid");
                     document.getElementById("inputSignLogin").classList.add("is-invalid");
+                    isLoginCorrect = false;
+                } else {
+                    document.getElementById("inputSignLogin").classList.add("is-valid");
+                    isLoginCorrect = true;
+                }
+
+                if (!registeringUser.password.length) {
+                    document.querySelector(".invalidPasswordWarning").innerText = "Please enter password";
+                    document.getElementById("inputSignPassword").classList.remove("is-valid");
+                    document.getElementById("inputSignPassword").classList.add("is-invalid");
+                    isPasswordCorrect = false;
+                } else {
+                    document.getElementById("inputSignPassword").classList.add("is-valid");
+                    isPasswordCorrect = true;
                 }
 
 
-            /*allUsers.push(registeringUser);
-            setUsersToLocalStorage(allUsers);*/
-        }
+                if (!registeringUser.name.length) {
+                    document.querySelector(".invalidUserName").innerText = "Please enter name";
+                    document.getElementById("inputSignName").classList.remove("is-valid");
+                    document.getElementById("inputSignName").classList.add("is-invalid");
+                    isNameCorrect = false;
+                } else {
+                    document.getElementById("inputSignName").classList.add("is-valid");
+                    isNameCorrect = true;
+                }
 
+                if (!registeringUser.surname.length) {
+                    document.querySelector(".invalidUserSurname").innerText = "Please enter surname";
+                    document.getElementById("inputSignSurname").classList.remove("is-valid");
+                    document.getElementById("inputSignSurname").classList.add("is-invalid");
+                    isSurnameCorrect = false;
+                } else {
+                    document.getElementById("inputSignSurname").classList.add("is-valid");
+                    isSurnameCorrect = true;
+                }
+
+
+                if (!registeringUser.dateOfBirth.length) {
+                    document.querySelector(".invalidDateOfBirth").innerText = "Please enter date of birth";
+                    document.getElementById("inputSignDateOfBirth").classList.remove("is-valid");
+                    document.getElementById("inputSignDateOfBirth").classList.add("is-invalid");
+                    isDateOfBirthCorrect = false;
+                } else {
+
+                    const regDate = new RegExp('(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d');
+
+                    if (!regDate.test(registeringUser.dateOfBirth)) {
+                        document.querySelector(".invalidDateOfBirth").innerText = "Please enter date in format: DD/MM/YYYY";
+                        document.getElementById("inputSignDateOfBirth").classList.remove("is-valid");
+                        document.getElementById("inputSignDateOfBirth").classList.add("is-invalid");
+                        isDateOfBirthCorrect = false;
+                    } else {
+                        document.getElementById("inputSignDateOfBirth").classList.add("is-valid");
+                        isDateOfBirthCorrect = true;
+                    }
+
+                }
+
+                if (!registeringUser.gender) {
+                    document.querySelector(".invalidUserGender").innerText = "Please chose gender";
+                    document.querySelector("#getUserGenderFemale").classList.remove("is-valid");
+                    document.querySelector("#getUserGenderFemale").classList.add("is-invalid");
+                    document.querySelector("#getUserGenderMale").classList.remove("is-valid");
+                    document.querySelector("#getUserGenderMale").classList.add("is-invalid");
+                    isGenderCorrect = false;
+                } else {
+                    document.querySelector("#getUserGenderFemale").classList.remove("is-invalid");
+                    document.querySelector("#getUserGenderFemale").classList.add("is-valid");
+                    document.querySelector("#getUserGenderMale").classList.remove("is-invalid");
+                    document.querySelector("#getUserGenderMale").classList.add("is-valid");
+                    isGenderCorrect = true;
+                }
+
+                if (notDuplicate &&
+                    isLoginCorrect &&
+                    isPasswordCorrect &&
+                    isNameCorrect &&
+                    isSurnameCorrect &&
+                    isDateOfBirthCorrect &&
+                    isGenderCorrect) {
+                    allUsers.push(registeringUser);
+                    setUsersToLocalStorage(allUsers);
+                    document.location.reload(true);
+                }
+
+        }
     };
 
 

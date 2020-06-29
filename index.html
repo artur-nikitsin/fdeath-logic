@@ -230,8 +230,8 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="inputSignName" placeholder="Name"
                                        required>
-                                <div class="invalid-feedback">
-                                    Please enter a name.
+                                <div class="invalid-feedback invalidUserName">
+
                                 </div>
                             </div>
 
@@ -241,18 +241,18 @@
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="inputSignSurname" placeholder="Surname"
                                        required>
-                                <div class="invalid-feedback">
-                                    Please enter a text.
+                                <div class="invalid-feedback invalidUserSurname">
                                 </div>
                             </div>
 
                         </div>
 
                         <div class="form-group row">
-                            <label for="inputSignAge" class="col-sm-2 col-form-label">Age</label>
+                            <label for="inputSignDateOfBirth" class="col-sm-2 col-form-label">Date of birth</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="inputSignAge" placeholder="Age" required>
-                                <div class="invalid-feedback">
+                                <input type="text" class="form-control" id="inputSignDateOfBirth"
+                                       placeholder="dd.mm.yyyy" required>
+                                <div class="invalid-feedback invalidDateOfBirth">
                                     Please enter a text.
                                 </div>
                             </div>
@@ -261,25 +261,24 @@
 
                         <fieldset class="form-group">
                             <div class="row">
-                                <legend class="col-form-label col-sm-2 pt-0">Sex</legend>
+                                <legend class="col-form-label col-sm-2 pt-0">Gender</legend>
                                 <div class="col-sm-10">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gridRadiosSex"
-                                               id="getUserSexMale" value="male"
+                                        <input class="form-check-input" type="radio" name="gridRadiosGender"
+                                               id="getUserGenderMale" value="male"
                                                required>
-                                        <label class="form-check-label" for="getUserSexMale">
+                                        <label class="form-check-label" for="getUserGenderMale">
                                             Male
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gridRadiosSex"
-                                               id="getUserSexFemale"
+                                        <input class="form-check-input" type="radio" name="gridRadiosGender"
+                                               id="getUserGenderFemale"
                                                value="female">
-                                        <label class="form-check-label" for="getUserSexFemale">
+                                        <label class="form-check-label" for="getUserGenderFemale">
                                             Female
                                         </label>
-                                        <div class="invalid-feedback">
-                                            Please enter a priority.
+                                        <div class="invalid-feedback invalidUserGender">
                                         </div>
                                     </div>
 
@@ -295,9 +294,7 @@
                         <div class="col-sm-12 text-center">
 
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" id="addUserButton"> Sign
-                                in
-                            </button>
+                            <button type="submit" class="btn btn-primary" id="addUserButton">Sign in</button>
                         </div>
                     </div>
                 </form>
