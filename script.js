@@ -150,6 +150,7 @@ window.onload = function () {
 
         document.querySelector("#addUserButton").innerText = "Sign in";
         document.querySelector("#signModalLabel").innerText = "Sign in";
+        document.querySelector("#registerNewUser").innerText = "or register";
 
         [].forEach.call(formInputs, function (input) {
             input.classList.remove("is-invalid");
