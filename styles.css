@@ -64,6 +64,8 @@
     display: none;
 }
 
-.btn-block {
-    margin-bottom: 10px !important;
+.btn-link {
+    text-decoration: none;
+    margin-top: -7px !important;
+    font-size: 20px !important;
 }

@@ -145,12 +145,15 @@ window.onload = function () {
 
         document.querySelector("#getUserGenderFemale").classList.remove("is-invalid");
         document.querySelector("#getUserGenderMale").classList.remove("is-invalid");
-
+        document.querySelector("#getUserGenderFemale").classList.remove("is-valid");
+        document.querySelector("#getUserGenderMale").classList.remove("is-valid");
 
         document.querySelector("#addUserButton").innerText = "Sign in";
+        document.querySelector("#signModalLabel").innerText = "Sign in";
 
         [].forEach.call(formInputs, function (input) {
             input.classList.remove("is-invalid");
+            input.classList.remove("is-valid");
         });
     };
 
@@ -161,7 +164,6 @@ window.onload = function () {
         this.classList.remove("is-invalid");
         this.classList.remove("is-valid");
     }
-
 
 
     function clearAllInputsWarnings() {
@@ -186,18 +188,29 @@ window.onload = function () {
 
     function changeSubmitButton() {
 
-        let changebleButton = document.querySelector("#addUserButton");
-
+        let changebleSignButton = document.querySelector("#addUserButton");
+        let changebleSignOrRegisterButton = document.querySelector("#registerNewUser");
         let signModalHeader = document.querySelector("#signModalLabel");
 
-        if (changebleButton.textContent === "Sign in") {
+        if (changebleSignButton.textContent === "Sign in") {
             signModalHeader.innerText = "Register";
-            changebleButton.innerText = "Register";
+            changebleSignButton.innerText = "Register";
+            changebleSignOrRegisterButton.innerText = "or sign";
         } else {
             signModalHeader.innerText = "Sign in";
-            changebleButton.innerText = "Sign in";
+            changebleSignButton.innerText = "Sign in";
+            changebleSignOrRegisterButton.innerText = "or register";
         }
 
+        [].forEach.call(formInputs, function (input) {
+            input.classList.remove("is-invalid");
+            input.classList.remove("is-valid");
+        });
+
+        document.querySelector("#getUserGenderFemale").classList.remove("is-invalid");
+        document.querySelector("#getUserGenderMale").classList.remove("is-invalid");
+        document.querySelector("#getUserGenderFemale").classList.remove("is-valid");
+        document.querySelector("#getUserGenderMale").classList.remove("is-valid");
     }
 
 
@@ -226,6 +239,7 @@ window.onload = function () {
                     }
                 });
 
+
                 if (coincidingUser) {
                     document.getElementById("inputSignLogin").classList.remove("is-invalid");
                     document.getElementById("inputSignLogin").classList.add("is-valid");
@@ -238,14 +252,26 @@ window.onload = function () {
                         setAppState("signed-in");
                         document.location.reload(true);
                     } else {
-
                         document.querySelector(".invalidPasswordWarning").innerText = "Please check the password.";
+                        document.getElementById("inputSignPassword").classList.add("is-invalid");
+                    }
+
+
+                    if (!signingUser.password) {
+                        document.querySelector(".invalidPasswordWarning").innerText = "Please enter password";
+                        document.getElementById("inputSignPassword").classList.remove("is-valid");
                         document.getElementById("inputSignPassword").classList.add("is-invalid");
                     }
 
 
                 } else {
                     document.querySelector(".invalidLoginWarning").innerText = "Login does not exist. Please check.";
+                    document.getElementById("inputSignLogin").classList.remove("is-valid");
+                    document.getElementById("inputSignLogin").classList.add("is-invalid");
+                }
+
+                if (!signingUser.login) {
+                    document.querySelector(".invalidLoginWarning").innerText = "Please enter login";
                     document.getElementById("inputSignLogin").classList.remove("is-valid");
                     document.getElementById("inputSignLogin").classList.add("is-invalid");
                 }
@@ -279,7 +305,9 @@ window.onload = function () {
 
                 let notDuplicate = false;
                 let isLoginCorrect = false;
-                let isPasswordCorrect = false;
+                let isLoginHasLength = false;
+                let isPasswordDifficult = false;
+                let isPasswordHasLength = false;
                 let isNameCorrect = false;
                 let isSurnameCorrect = false;
                 let isDateOfBirthCorrect = false;
@@ -296,10 +324,10 @@ window.onload = function () {
                     notDuplicate = true
                 }
 
-                const regLogin = new RegExp('^[a-zA-Z0-9]+$');
+                const regLogin = new RegExp('^[a-zA-Z][a-zA-Z0-9-_\\.]{1,20}$');
 
                 if (!regLogin.test(registeringUser.login)) {
-                    document.querySelector(".invalidLoginWarning").innerText = "Please use only latin letters and numbers";
+                    document.querySelector(".invalidLoginWarning").innerText = "Please use only latin letters and numbers, 2-20 symbols";
                     document.getElementById("inputSignLogin").classList.remove("is-valid");
                     document.getElementById("inputSignLogin").classList.add("is-invalid");
                     isLoginCorrect = false;
@@ -308,14 +336,40 @@ window.onload = function () {
                     isLoginCorrect = true;
                 }
 
+
+                if (!registeringUser.login.length) {
+                    document.querySelector(".invalidLoginWarning").innerText = "Please enter login";
+                    document.getElementById("inputSignLogin").classList.remove("is-valid");
+                    document.getElementById("inputSignLogin").classList.add("is-invalid");
+                    isLoginHasLength = false;
+                } else {
+                    document.getElementById("inputSignLogin").classList.add("is-valid");
+                    isLoginHasLength = true;
+                }
+
+
+                const regPassword = new RegExp('(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$')
+
+                if (!regPassword.test(registeringUser.password)) {
+                    document.querySelector(".invalidPasswordWarning").innerText = "Please use only " +
+                        "lowercase and uppercase Latin letters and numbers. At least 8 symbols";
+                    document.getElementById("inputSignPassword").classList.remove("is-valid");
+                    document.getElementById("inputSignPassword").classList.add("is-invalid");
+                    isPasswordDifficult = false;
+                } else {
+                    document.getElementById("inputSignPassword").classList.add("is-valid");
+                    isPasswordDifficult = true;
+                }
+
+
                 if (!registeringUser.password.length) {
                     document.querySelector(".invalidPasswordWarning").innerText = "Please enter password";
                     document.getElementById("inputSignPassword").classList.remove("is-valid");
                     document.getElementById("inputSignPassword").classList.add("is-invalid");
-                    isPasswordCorrect = false;
+                    isPasswordHasLength = false;
                 } else {
                     document.getElementById("inputSignPassword").classList.add("is-valid");
-                    isPasswordCorrect = true;
+                    isPasswordHasLength = true;
                 }
 
 
@@ -378,7 +432,9 @@ window.onload = function () {
 
                 if (notDuplicate &&
                     isLoginCorrect &&
-                    isPasswordCorrect &&
+                    isLoginHasLength &&
+                    isPasswordDifficult &&
+                    isPasswordHasLength &&
                     isNameCorrect &&
                     isSurnameCorrect &&
                     isDateOfBirthCorrect &&
