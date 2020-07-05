@@ -63,3 +63,7 @@
 .hideTaskList {
     display: none;
 }
+
+.btn-block {
+    margin-bottom: 10px !important;
+}

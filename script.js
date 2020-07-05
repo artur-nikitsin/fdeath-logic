@@ -136,9 +136,6 @@ window.onload = function () {
             checkedGenderRadio.checked = false
         }
 
-        if (validatedForms) {
-            validatedForms.classList.remove('was-validated');
-        }
 
         document.getElementById("inputSignLogin").value = ""
         document.getElementById("inputSignPassword").value = ""
@@ -146,6 +143,15 @@ window.onload = function () {
         document.getElementById("inputSignSurname").value = ""
         document.getElementById("inputSignDateOfBirth").value = ""
 
+        document.querySelector("#getUserGenderFemale").classList.remove("is-invalid");
+        document.querySelector("#getUserGenderMale").classList.remove("is-invalid");
+
+
+        document.querySelector("#addUserButton").innerText = "Sign in";
+
+        [].forEach.call(formInputs, function (input) {
+            input.classList.remove("is-invalid");
+        });
     };
 
 
@@ -157,9 +163,14 @@ window.onload = function () {
     }
 
 
-    [].forEach.call(formInputs, function (input) {
-        input.addEventListener("input", deleteInputWarnings, false)
-    });
+
+    function clearAllInputsWarnings() {
+        [].forEach.call(formInputs, function (input) {
+            input.addEventListener("input", deleteInputWarnings, false)
+        });
+    }
+
+    clearAllInputsWarnings()
 
 
     document.getElementById("addUserButton").addEventListener("click", addUser, true);
@@ -177,9 +188,13 @@ window.onload = function () {
 
         let changebleButton = document.querySelector("#addUserButton");
 
+        let signModalHeader = document.querySelector("#signModalLabel");
+
         if (changebleButton.textContent === "Sign in") {
+            signModalHeader.innerText = "Register";
             changebleButton.innerText = "Register";
         } else {
+            signModalHeader.innerText = "Sign in";
             changebleButton.innerText = "Sign in";
         }
 
